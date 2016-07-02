@@ -50,11 +50,11 @@ Set to 1 to enable debugging features within class:
 /* _____STANDARD INCLUDES____________________________________________________ */
 // include types & constants of Wiring core API
 #if defined(ARDUINO) && ARDUINO >= 100
-#include "Arduino.h"
+	#include "Arduino.h"
 #elif defined(PARTICLE)
-#include "Particle.h"
+	#include "Particle.h"
 #else
-#include "WProgram.h"
+	#include "WProgram.h"
 #endif
 
 /* _____UTILITY MACROS_______________________________________________________ */

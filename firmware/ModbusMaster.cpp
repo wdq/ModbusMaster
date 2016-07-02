@@ -34,9 +34,20 @@ Arduino library for communicating with Modbus slaves over RS232/485 (via RTU pro
 
 /* _____GLOBAL VARIABLES_____________________________________________________ */
 #if defined(PARTICLE)
-HAL_USART_Serial MBSerial = Serial1; ///< Pointer to Serial1 class object
+	#include "Particle.h"
+	/* prototypes */
+	uint16_t makeWord(uint16_t w);
+	uint16_t makeWord(byte h, byte l);
+
+	/* functions */
+	uint16_t makeWord(uint16_t w) { return w; }
+	uint16_t makeWord(uint8_t h, uint8_t l) { return (h << 8) | l; }
+
+	/* macro */
+	#define word(...) makeWord(__VA_ARGS__)
+	HAL_USART_Serial MBSerial = Serial1; ///< Pointer to Serial1 class object
 #else
-HardwareSerial MBSerial = Serial1; ///< Pointer to Serial class object
+	HardwareSerial MBSerial = Serial1; ///< Pointer to Serial class object
 #endif
 
 /* _____PUBLIC FUNCTIONS_____________________________________________________ */
