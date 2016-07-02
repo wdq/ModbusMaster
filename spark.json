@@ -3,5 +3,5 @@
   "author": "Anurag Chugh <lithiumhead@gmail.com>",
   "license": "GPL v3 (http://www.gnu.org/licenses/gpl.html)",
   "version": "1.0.0",
-  "description": "Modbus Master Library for Spark Core"
+  "description": "Modbus Master Library for Particle Photon"
 }

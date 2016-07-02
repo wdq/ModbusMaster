@@ -1,7 +1,7 @@
+Ported to Particle Photon by Anurag Chugh (https://github.com/lithiumhead) on 2015-02-07
+
 THIS REPO IS NO LONGER MAINTAINED
 =================================
-
-Ported to Spark Core by Anurag Chugh (https://github.com/lithiumhead) on 2015-04-07
 
 I haven't used this for a while. If you would like to take over ownership of this repo, please let me know.
 
