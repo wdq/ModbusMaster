@@ -45,9 +45,9 @@ Arduino library for communicating with Modbus slaves over RS232/485 (via RTU pro
 
 	/* macro */
 	#define word(...) makeWord(__VA_ARGS__)
-	USARTSerial MBSerial = Serial1; ///< Pointer to Serial1 class object
+	#define MBSerial Serial1 ///< Pointer to Serial1 class object
 #else
-	HardwareSerial MBSerial = Serial1; ///< Pointer to Serial class object
+	HardwareSerial MBSerial = Serial1; ///< Pointer to Serial1 class object
 #endif
 
 /* _____PUBLIC FUNCTIONS_____________________________________________________ */
@@ -128,6 +128,8 @@ void ModbusMaster::begin(uint16_t u16BaudRate)
   _u8TransmitBufferIndex = 0;
   u16TransmitBufferLength = 0;
   
+#if defined(PARTICLE)
+#else
   switch(_u8SerialPort)
   {
 #if defined(UBRR1H)
@@ -150,10 +152,11 @@ void ModbusMaster::begin(uint16_t u16BaudRate)
       
     case 0:
     default:
-      MBSerial = Serial;
+      MBSerial = Serial1;
       break;
   }
-  
+#endif 
+
   MBSerial.begin(u16BaudRate);
 #if __MODBUSMASTER_DEBUG__
   pinMode(4, OUTPUT);
