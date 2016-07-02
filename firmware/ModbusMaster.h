@@ -51,6 +51,8 @@ Set to 1 to enable debugging features within class:
 // include types & constants of Wiring core API
 #if defined(ARDUINO) && ARDUINO >= 100
 #include "Arduino.h"
+#elif defined(SPARK_CORE)
+#include "application.h"
 #else
 #include "WProgram.h"
 #endif
