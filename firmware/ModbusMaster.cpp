@@ -33,8 +33,11 @@ Arduino library for communicating with Modbus slaves over RS232/485 (via RTU pro
 
 
 /* _____GLOBAL VARIABLES_____________________________________________________ */
-HardwareSerial MBSerial = Serial; ///< Pointer to Serial class object
-
+#if defined(PARTICLE)
+HAL_USART_Serial MBSerial = Serial1; ///< Pointer to Serial1 class object
+#else
+HardwareSerial MBSerial = Serial1; ///< Pointer to Serial class object
+#endif
 
 /* _____PUBLIC FUNCTIONS_____________________________________________________ */
 /**
@@ -46,7 +49,7 @@ Creates class object using default serial port 0, Modbus slave ID 1.
 */
 ModbusMaster::ModbusMaster(void)
 {
-  _u8SerialPort = 0;
+  _u8SerialPort = 1;
   _u8MBSlave = 1;
 }
 
@@ -62,7 +65,7 @@ Creates class object using default serial port 0, specified Modbus slave ID.
 */
 ModbusMaster::ModbusMaster(uint8_t u8MBSlave)
 {
-  _u8SerialPort = 0;
+  _u8SerialPort = 1;
   _u8MBSlave = u8MBSlave;
 }
 
