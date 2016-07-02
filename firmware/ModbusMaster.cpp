@@ -45,7 +45,7 @@ Arduino library for communicating with Modbus slaves over RS232/485 (via RTU pro
 
 	/* macro */
 	#define word(...) makeWord(__VA_ARGS__)
-	HAL_USART_Serial MBSerial = Serial1; ///< Pointer to Serial1 class object
+	USARTSerial MBSerial = Serial1; ///< Pointer to Serial1 class object
 #else
 	HardwareSerial MBSerial = Serial1; ///< Pointer to Serial class object
 #endif
