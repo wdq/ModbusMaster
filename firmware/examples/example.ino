@@ -30,7 +30,7 @@ ModbusMaster node(1);
 
 void setup() {
 	// initialize Modbus communication baud rate
-	node.begin(9600);
+	node.begin(9600,D7);
 }
 
 
