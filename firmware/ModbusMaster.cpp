@@ -37,7 +37,7 @@ Adapted for Spark Core by Paul Kourany, March 14, 2014
 
 /* _____GLOBAL VARIABLES_____________________________________________________ */
 USARTSerial MBSerial = Serial1; 	///< Pointer to Serial1 class object
-
+uint8_t ENABLE_PIN = D7;
 
 
 // Fix to define word type conversion function
@@ -141,7 +141,7 @@ Call once class has been instantiated, typically within setup().
 @param u16BaudRate baud rate, in standard increments (300..115200)
 @ingroup setup
 */
-void ModbusMaster::begin(uint16_t u16BaudRate)
+void ModbusMaster::begin(uint16_t u16BaudRate, uint8_t txrxpin)
 {
 //  txBuffer = (uint16_t*) calloc(ku8MaxBufferSize, sizeof(uint16_t));
   _u8TransmitBufferIndex = 0;
@@ -170,6 +170,9 @@ void ModbusMaster::begin(uint16_t u16BaudRate)
   pinMode(4, OUTPUT);
   pinMode(5, OUTPUT);
 #endif
+  ENABLE_PIN = txrxpin;
+  pinMode(ENABLE_PIN, OUTPUT);
+  digitalWrite(ENABLE_PIN, LOW);
 }
 
 
@@ -769,10 +772,12 @@ uint8_t ModbusMaster::ModbusMasterTransaction(uint8_t u8MBFunction)
   u8ModbusADU[u8ModbusADUSize] = 0;
   
   // transmit request
+  digitalWrite(ENABLE_PIN, HIGH);
   for (i = 0; i < u8ModbusADUSize; i++)
   {
     MBSerial.write(u8ModbusADU[i]);
   }
+  digitalWrite(ENABLE_PIN, LOW);
   
   u8ModbusADUSize = 0;
   MBSerial.flush();
