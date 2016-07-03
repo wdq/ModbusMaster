@@ -120,14 +120,14 @@ ModbusMaster::ModbusMaster(uint8_t u8SerialPort, uint8_t u8MBSlave)
 /**
 Initialize class object.
 
-Sets up the serial port using default 19200 baud rate.
+Sets up the serial port using default 9600 baud rate.
 Call once class has been instantiated, typically within setup().
 
 @ingroup setup
 */
 void ModbusMaster::begin(void)
 {
-  begin(19200);
+  begin(9600);
 }
 
 
