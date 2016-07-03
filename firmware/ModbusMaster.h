@@ -1,7 +1,7 @@
 /**
 @file
 Arduino library for communicating with Modbus slaves over RS232/485 (via RTU protocol).
-
+Adapted for Spark Core by Paul Kourany, March 14, 2014
 @defgroup setup ModbusMaster Object Instantiation/Initialization
 @defgroup buffer ModbusMaster Buffer Management
 @defgroup discrete Modbus Function Codes for Discrete Coils/Inputs
@@ -9,7 +9,6 @@ Arduino library for communicating with Modbus slaves over RS232/485 (via RTU pro
 @defgroup constant Modbus Function Codes, Exception Codes
 */
 /*
-
   ModbusMaster.h - Arduino library for communicating with Modbus slaves
   over RS232/485 (via RTU protocol).
   
@@ -29,14 +28,15 @@ Arduino library for communicating with Modbus slaves over RS232/485 (via RTU pro
   along with ModbusMaster.  If not, see <http://www.gnu.org/licenses/>.
   
   Written by Doc Walker (Rx)
-  Copyright © 2009-2013 Doc Walker <4-20ma at wvfans dot net>
-  
+  Copyright Â© 2009-2013 Doc Walker <4-20ma at wvfans dot net>
+  Adapted for Spark Core by Paul Kourany, March 14, 2014
 */
 
   
 #ifndef ModbusMaster_h
 #define ModbusMaster_h
 
+#include "application.h"
 
 /**
 @def __MODBUSMASTER_DEBUG__ (1).
@@ -46,25 +46,6 @@ Set to 1 to enable debugging features within class:
 */
 #define __MODBUSMASTER_DEBUG__ (1)
 
-
-/* _____STANDARD INCLUDES____________________________________________________ */
-// include types & constants of Wiring core API
-#if defined(ARDUINO) && ARDUINO >= 100
-	#include "Arduino.h"
-#elif defined(PARTICLE)
-	#include "Particle.h"
-
-	#define lowByte(w) ((uint8_t) ((w) & 0xff))
-	#define highByte(w) ((uint8_t) ((w) >> 8))
-
-	#define bitRead(value, bit) (((value) >> (bit)) & 0x01)
-	#define bitSet(value, bit) ((value) |= (1UL << (bit)))
-	#define bitClear(value, bit) ((value) &= ~(1UL << (bit)))
-	#define bitWrite(value, bit, bitvalue) (bitvalue ? bitSet(value, bit) : bitClear(value, bit))
-
-#else
-	#include "WProgram.h"
-#endif
 
 /* _____UTILITY MACROS_______________________________________________________ */
 /**
@@ -81,7 +62,6 @@ Macro to return high word of a 32-bit integer.
 #define highWord(ww) ((uint16_t) ((ww) >> 16))
 
 
-
 /**
 @def LONG(hi, lo) ((uint32_t) ((hi) << 16 | (lo)))
 Macro to generate 32-bit integer from (2) 16-bit words.
@@ -89,9 +69,20 @@ Macro to generate 32-bit integer from (2) 16-bit words.
 #define LONG(hi, lo) ((uint32_t) ((hi) << 16 | (lo)))
 
 
+
+
 /* _____PROJECT INCLUDES_____________________________________________________ */
 // functions to calculate Modbus Application Data Unit CRC
-#include "crc16.h"
+//#include <util/crc16.h>
+
+
+
+#define lowByte(w)                     ((w) & 0xFF)
+#define highByte(w)                    (((w) >> 8) & 0xFF)
+#define bitRead(value, bit)            (((value) >> (bit)) & 0x01)
+#define bitSet(value, bit)             ((value) |= (1UL << (bit)))
+#define bitClear(value, bit)           ((value) &= ~(1UL << (bit)))
+#define bitWrite(value, bit, bitvalue) (bitvalue ? bitSet(value, bit) : bitClear(value, bit))
 
 
 /* _____CLASS DEFINITIONS____________________________________________________ */
@@ -293,8 +284,3 @@ class ModbusMaster
     void (*_idle)();
 };
 #endif
-
-/**
-@example examples/Basic/Basic.pde
-@example examples/PhoenixContact_nanoLC/PhoenixContact_nanoLC.pde
-*/

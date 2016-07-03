@@ -1,6 +1,8 @@
 /**
 @file
 Arduino library for communicating with Modbus slaves over RS232/485 (via RTU protocol).
+
+Adapted for Spark Core by Paul Kourany, March 14, 2014
 */
 /*
 
@@ -23,32 +25,49 @@ Arduino library for communicating with Modbus slaves over RS232/485 (via RTU pro
   along with ModbusMaster.  If not, see <http://www.gnu.org/licenses/>.
   
   Written by Doc Walker (Rx)
-  Copyright © 2009-2013 Doc Walker <4-20ma at wvfans dot net>
-  
+  Copyright Â© 2009-2013 Doc Walker <4-20ma at wvfans dot net>
+  Adapted for Spark Core by Paul Kourany, March 14, 2014
 */
 
 
 /* _____PROJECT INCLUDES_____________________________________________________ */
 #include "ModbusMaster.h"
 
+#undef SPARK_SERIAL2 		// #define once Spark Serial2 is implemented
 
 /* _____GLOBAL VARIABLES_____________________________________________________ */
-#if defined(PARTICLE)
-	#include "Particle.h"
-	/* prototypes */
-	uint16_t makeWord(uint16_t w);
-	uint16_t makeWord(byte h, byte l);
+USARTSerial MBSerial = Serial1; 	///< Pointer to Serial1 class object
 
-	/* functions */
-	uint16_t makeWord(uint16_t w) { return w; }
-	uint16_t makeWord(uint8_t h, uint8_t l) { return (h << 8) | l; }
 
-	/* macro */
-	#define word(...) makeWord(__VA_ARGS__)
-	#define MBSerial Serial1 ///< Pointer to Serial1 class object
-#else
-	HardwareSerial MBSerial = Serial1; ///< Pointer to Serial1 class object
-#endif
+
+// Fix to define word type conversion function
+uint16_t word(uint8_t high, uint8_t low) {
+    uint16_t ret_val = low;
+    ret_val += (high << 8);
+    return ret_val;
+}
+
+
+
+/* _____PROJECT INCLUDES_____________________________________________________ */
+// functions to calculate Modbus Application Data Unit CRC
+// fix for #include <util/crc16.h>
+uint16_t _crc16_update(uint16_t crc, uint8_t a)
+{
+    int i;
+
+    crc ^= a;
+    for (i = 0; i < 8; ++i)
+    {
+        if (crc & 1)
+            crc = (crc >> 1) ^ 0xA001;
+        else
+            crc = (crc >> 1);
+    }
+    return crc;
+}
+
+
 
 /* _____PUBLIC FUNCTIONS_____________________________________________________ */
 /**
@@ -87,13 +106,13 @@ Constructor.
 Creates class object using specified serial port, Modbus slave ID.
 
 @overload void ModbusMaster::ModbusMaster(uint8_t u8SerialPort, uint8_t u8MBSlave)
-@param u8SerialPort serial port (Serial, Serial1..Serial3)
+@param u8SerialPort serial port (Serial1, Serial2)
 @param u8MBSlave Modbus slave ID (1..255)
 @ingroup setup
 */
 ModbusMaster::ModbusMaster(uint8_t u8SerialPort, uint8_t u8MBSlave)
 {
-  _u8SerialPort = (u8SerialPort > 3) ? 0 : u8SerialPort;
+  _u8SerialPort = ((u8SerialPort > 2) || (u8SerialPort < 1)) ? 1 : u8SerialPort;
   _u8MBSlave = u8MBSlave;
 }
 
@@ -128,35 +147,24 @@ void ModbusMaster::begin(uint16_t u16BaudRate)
   _u8TransmitBufferIndex = 0;
   u16TransmitBufferLength = 0;
   
-#if defined(PARTICLE)
-#else
   switch(_u8SerialPort)
   {
-#if defined(UBRR1H)
     case 1:
       MBSerial = Serial1;
       break;
-#endif
-      
-#if defined(UBRR2H)
+#ifdef SPARK_SERIAL2      
     case 2:
-      MBSerial = Serial2;
+      MBSerial = Serial2;		// Spark future feature !!!
       break;
+#else
+	case 2:
 #endif
-      
-#if defined(UBRR3H)
-    case 3:
-      MBSerial = Serial3;
-      break;
-#endif
-      
     case 0:
     default:
-      MBSerial = Serial1;
+      MBSerial = Serial1;		// Default to Serial1 for Spark Core
       break;
   }
-#endif 
-
+  
   MBSerial.begin(u16BaudRate);
 #if __MODBUSMASTER_DEBUG__
   pinMode(4, OUTPUT);
@@ -224,7 +232,7 @@ void ModbusMaster::send(uint32_t data)
 
 void ModbusMaster::send(uint8_t data)
 {
-  send(word(data));
+  send(word(0x00, data));      //MSB = 0, LSB = data
 }
 
 
@@ -763,13 +771,7 @@ uint8_t ModbusMaster::ModbusMasterTransaction(uint8_t u8MBFunction)
   // transmit request
   for (i = 0; i < u8ModbusADUSize; i++)
   {
-#if defined(ARDUINO) && ARDUINO >= 100
     MBSerial.write(u8ModbusADU[i]);
-#elif defined(PARTICLE)
-    MBSerial.write(u8ModbusADU[i]);
-#else
-    MBSerial.print(u8ModbusADU[i], BYTE);
-#endif
   }
   
   u8ModbusADUSize = 0;
