@@ -21,7 +21,7 @@
 
 */
 
-#include <ModbusMaster.h>
+#include "ModbusMaster/ModbusMaster.h"
 
 // instantiate ModbusMaster object as slave ID 2
 // defaults to serial port 0 since no port was specified
