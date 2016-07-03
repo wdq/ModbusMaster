@@ -765,6 +765,8 @@ uint8_t ModbusMaster::ModbusMasterTransaction(uint8_t u8MBFunction)
   {
 #if defined(ARDUINO) && ARDUINO >= 100
     MBSerial.write(u8ModbusADU[i]);
+#elif defined(PARTICLE)
+    MBSerial.write(u8ModbusADU[i]);
 #else
     MBSerial.print(u8ModbusADU[i], BYTE);
 #endif
