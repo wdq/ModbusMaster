@@ -127,7 +127,7 @@ Call once class has been instantiated, typically within setup().
 */
 void ModbusMaster::begin(void)
 {
-  begin(9600);
+  begin(9600,D7);
 }
 
 
@@ -137,7 +137,7 @@ Initialize class object.
 Sets up the serial port using specified baud rate.
 Call once class has been instantiated, typically within setup().
 
-@overload ModbusMaster::begin(uint16_t u16BaudRate)
+@overload ModbusMaster::begin(uint16_t u16BaudRate, uint8_t txrxpin)
 @param u16BaudRate baud rate, in standard increments (300..115200)
 @ingroup setup
 */
