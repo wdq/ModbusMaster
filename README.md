@@ -1,11 +1,3 @@
-Ported to Particle Photon by Anurag Chugh (https://github.com/lithiumhead) on 2015-02-07
-
-THIS REPO IS NO LONGER MAINTAINED
-=================================
-
-I haven't used this for a while. If you would like to take over ownership of this repo, please let me know.
-
-
 ##Overview##
 This is an Arduino class library for communicating with Modbus slaves over RS232/485 (via RTU protocol). **Updated to support Arduino 1.0.**
 
@@ -52,75 +44,19 @@ I can be contacted at 4-20ma at wvfans dot net.
 ##Example##
 The library contains a few sketches that demonstrate use of the ModbusMaster library. You can find these in the [examples](/4-20ma/ModbusMaster/tree/master/examples/) folder.
 
-```c++
-/*
-
-  Basic.pde - example using ModbusMaster library
-
-  This file is part of ModbusMaster.
-
-  ModbusMaster is free software: you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
-
-  ModbusMaster is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ModbusMaster.  If not, see <http://www.gnu.org/licenses/>.
-
-  Written by Doc Walker (Rx)
-  Copyright © 2009-2013 Doc Walker <4-20ma at wvfans dot net>
-
-*/
-
-#include <ModbusMaster.h>
-
-
-// instantiate ModbusMaster object as slave ID 2
-// defaults to serial port 0 since no port was specified
-ModbusMaster node(2);
-
-
-void setup()
-{
-  // initialize Modbus communication baud rate
-  node.begin(19200);
-}
-
-
-void loop()
-{
-  static uint32_t i;
-  uint8_t j, result;
-  uint16_t data[6];
-
-  i++;
-
-  // set word 0 of TX buffer to least-significant word of counter (bits 15..0)
-  node.setTransmitBuffer(0, lowWord(i));
-
-  // set word 1 of TX buffer to most-significant word of counter (bits 31..16)
-  node.setTransmitBuffer(1, highWord(i));
-
-  // slave: write TX buffer to (2) 16-bit registers starting at register 0
-  result = node.writeMultipleRegisters(0, 2);
-
-  // slave: read (6) 16-bit registers starting at register 2 to RX buffer
-  result = node.readHoldingRegisters(2, 6);
-
-  // do something with data if read is successful
-  if (result == node.ku8MBSuccess)
-  {
-    for (j = 0; j < 6; j++)
-    {
-      data[j] = node.getResponseBuffer(j);
-    }
-  }
-}
-```
-
+##Acknowledgements##
 _Project inspired by [Arduino Modbus Master](http://sites.google.com/site/jpmzometa/arduino-mbrt/arduino-modbus-master)._
+
+##Port to Spark Core##
+Adapted for Spark Core by Paul Kourany, March 14, 2014
+
+##Port to Particle Photon##
+Further modifications and port to Particle Photon by Anurag Chugh, July 5, 2016
+Changes:
+1. Replaced spaces with tabs for indentation
+2. If the initial bytes received in response to a transmitted frame are "zeros", keep discarding untl a non-zero byte is received
+3. Assign an use a TX_Enable pin to switch RS485 driver from receiving to transmitting.
+4. If debug is enabled, print TX and RX frames on Serial. Beware, enabling this messes up the timings for RS485 Transactions, causing them to fail.
+5. Empty the receive before beginning Modbus transaction by repeatedly calling read() until available() returns 0.
+
+

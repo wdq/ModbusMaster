@@ -1,3 +1,12 @@
+## [v1.1.0 (2016-07-10)](/4-20ma/ModbusMaster/tree/v1.1.0)
+- Port to Particle Photon by Anurag Chugh (https://github.com/lithiumhead)
+- Replaced spaces with tabs for indentation
+- If the initial bytes received in response to a transmitted frame are "zeros", keep discarding untl a non-zero byte is received
+- Assign an use a TX_Enable pin to switch RS485 driver from receiving to transmitting.
+- If debug is enabled, print TX and RX frames on Serial. Beware, enabling this messes up the timings for RS485 Transactions, causing them to fail.
+- Empty the receive before beginning Modbus transaction by repeatedly calling read() until available() returns 0.
+
+---
 ## [v0.9.1 (2013-01-02)](/4-20ma/ModbusMaster/tree/v0.9.1)
 - Add Rakefile to manage prepare/release process
 - Add .gitignore to skip doc/html, doc/latex files

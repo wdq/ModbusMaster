@@ -1,62 +1,46 @@
-/*
-  Basic.pde - example using ModbusMaster library
-
-  This file is part of ModbusMaster.
-
-  ModbusMaster is free software: you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
-
-  ModbusMaster is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with ModbusMaster.  If not, see <http://www.gnu.org/licenses/>.
-
-  Written by Doc Walker (Rx)
-  Copyright © 2009-2012 Doc Walker <4-20ma at wvfans dot net>
-
-*/
-
 #include "ModbusMaster/ModbusMaster.h"
 
 // instantiate ModbusMaster object as slave ID 1
-// defaults to serial port 0 since no port was specified
 ModbusMaster node(1);
 
 
 void setup() {
 	// initialize Modbus communication baud rate
-	node.begin(9600,D7);
+	node.begin(9600);
+	node.enableTXpin(D7); //D7 is the pin used to control the TX enable pin of RS485 driver
+	//node.enableDebug();  //Print TX and RX frames out on Serial. Beware, enabling this messes up the timings for RS485 Transactions, causing them to fail.
+	
+	Serial.begin(9600);
+	while(!Serial.available()) Particle.process();
+	Serial.println("Starting Modbus Transaction:");
 }
 
 
 void loop() {
 	static uint32_t i;
 	uint8_t j, result;
-	uint16_t data[6];
+	uint16_t data[10];
 
 	i++;
 
-	// set word 0 of TX buffer to least-significant word of counter (bits 15..0)
-	node.setTransmitBuffer(0, lowWord(i));
+	result = node.readHoldingRegisters(0x2f,2);
 
-	// set word 1 of TX buffer to most-significant word of counter (bits 31..16)
-	node.setTransmitBuffer(1, highWord(i));
-
-	// slave: write TX buffer to (2) 16-bit registers starting at register 0
-	result = node.writeMultipleRegisters(0, 2);
-
-	// slave: read (6) 16-bit registers starting at register 2 to RX buffer
-	result = node.readHoldingRegisters(2, 6);
-
+	Serial.println("");
+	
 	// do something with data if read is successful
 	if (result == node.ku8MBSuccess) {
-		for (j = 0; j < 6; j++) {
+		Serial.print("Success, Received data: ");
+		for (j = 0; j < 2; j++) {
 			data[j] = node.getResponseBuffer(j);
+			Serial.print(data[j], HEX);
+			Serial.print(" ");
 		}
+		Serial.println("");
+	} else {
+		Serial.print("Failed, Response Code: ");
+		Serial.print(result, HEX); 
+		Serial.println("");
+		delay(5000); //if failed, wait for bit longer, before retrying!
 	}
+	delay(1000);
 }
