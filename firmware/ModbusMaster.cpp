@@ -759,7 +759,6 @@ uint8_t ModbusMaster::ModbusMasterTransaction(uint8_t u8MBFunction) {
 			
 	// transmit request
 	if (MBUseEnablePin == 1) {  //Switch RS485 driver to transmitting mode.
-		delay(1); //Delay 1 millisecond before switching the driver back to receive mode.
 		digitalWrite(MBTXEnablePin, HIGH);  
 	}
 	
