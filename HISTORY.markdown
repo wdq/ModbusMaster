@@ -1,3 +1,7 @@
+## [v1.2.0 (2016-07-10)](/4-20ma/ModbusMaster/tree/v1.2.0)
+- Done Extensive testing on Particle Photon. Bumped up version for reimport
+
+---
 ## [v1.1.0 (2016-07-10)](/4-20ma/ModbusMaster/tree/v1.1.0)
 - Port to Particle Photon by Anurag Chugh (https://github.com/lithiumhead)
 - Replaced spaces with tabs for indentation
