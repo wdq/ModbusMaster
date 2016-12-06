@@ -93,8 +93,6 @@ public:
 	void begin();
 	void begin(uint16_t);
 	void idle(void (*)());
-    	void preTransmission(void (*)());
-    	void postTransmission(void (*)());	
 	
 	// Modbus exception codes
 	/**
@@ -281,9 +279,5 @@ private:
 	
 	// idle callback function; gets called during idle time between TX and RX
 	void (*_idle)();
-    	// preTransmission callback function; gets called before writing a Modbus message
-    	void (*_preTransmission)();
-    	// postTransmission callback function; gets called after a Modbus message has been sent
-    	void (*_postTransmission)();	
 };
 #endif
