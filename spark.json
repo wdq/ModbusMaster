@@ -1,7 +1,7 @@
 {
-  "name": "ModbusMaster",
-  "author": "Anurag Chugh <lithiumhead@gmail.com>",
+  "name": "ModbusMasterPWG",
+  "author": "William Quade <liam@quade.co>",
   "license": "GPL v3 (http://www.gnu.org/licenses/gpl.html)",
   "version": "1.2.1",
-  "description": "Modbus Master Library for Particle Photon"
+  "description": "Modbus Master Library for Particle Photon, and the LevelTroll"
 }
