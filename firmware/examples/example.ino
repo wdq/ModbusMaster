@@ -1,4 +1,4 @@
-#include "ModbusMaster/ModbusMaster.h"
+#include "ModbusMasterPWG/ModbusMasterPWG.h"
 
 // instantiate ModbusMaster object as slave ID 1
 ModbusMaster node(1);

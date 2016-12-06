@@ -29,7 +29,7 @@ Arduino library for communicating with Modbus slaves over RS232/485 (via RTU pro
 
 
 /* _____PROJECT INCLUDES_____________________________________________________ */
-#include "ModbusMaster.h"
+#include "ModbusMasterPWG.h"
 
 /* _____GLOBAL VARIABLES_____________________________________________________ */
 USARTSerial MBSerial = Serial1;		 ///< Pointer to Serial1 class object
