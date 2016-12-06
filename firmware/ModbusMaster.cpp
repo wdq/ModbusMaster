@@ -151,7 +151,7 @@ void ModbusMaster::begin(uint16_t u16BaudRate) {
 		break;
 	}
   
-	MBSerial.begin(u16BaudRate);
+	MBSerial.begin(u16BaudRate, SERIAL_8E1);
 }
 
 
