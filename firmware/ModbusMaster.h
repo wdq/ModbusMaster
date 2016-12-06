@@ -1,6 +1,7 @@
 /**
 @file
 Arduino library for communicating with Modbus slaves over RS232/485 (via RTU protocol).
+
 @defgroup setup ModbusMaster Object Instantiation/Initialization
 @defgroup buffer ModbusMaster Buffer Management
 @defgroup discrete Modbus Function Codes for Discrete Coils/Inputs
@@ -8,6 +9,7 @@ Arduino library for communicating with Modbus slaves over RS232/485 (via RTU pro
 @defgroup constant Modbus Function Codes, Exception Codes
 */
 /*
+
   ModbusMaster.h - Arduino library for communicating with Modbus slaves
   over RS232/485 (via RTU protocol).
   
@@ -91,6 +93,8 @@ public:
 	void begin();
 	void begin(uint16_t);
 	void idle(void (*)());
+    	void preTransmission(void (*)());
+    	void postTransmission(void (*)());	
 	
 	// Modbus exception codes
 	/**
@@ -270,12 +274,16 @@ private:
 	static const uint8_t ku8MBReadWriteMultipleRegisters = 0x17; ///< Modbus function 0x17 Read Write Multiple Registers
 	
 	// Modbus timeout [milliseconds]
-	static const uint8_t ku8MBResponseTimeout			= 200;  ///< Modbus timeout [milliseconds]
+	static const uint8_t ku8MBResponseTimeout			= 2000;  ///< Modbus timeout [milliseconds]
 	
 	// master function that conducts Modbus transactions
 	uint8_t ModbusMasterTransaction(uint8_t u8MBFunction);
 	
 	// idle callback function; gets called during idle time between TX and RX
 	void (*_idle)();
+    	// preTransmission callback function; gets called before writing a Modbus message
+    	void (*_preTransmission)();
+    	// postTransmission callback function; gets called after a Modbus message has been sent
+    	void (*_postTransmission)();	
 };
 #endif
